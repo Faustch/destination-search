@@ -5,7 +5,9 @@ A fullstack hotel search application with destination autocomplete (uses MongoDB
 ## 📁 Project Structure
 
 destination-search/
+
 ├── hotel-search/ # Frontend: React app
+
 ├── hotel-api/ # Backend: Express + MongoDB API
 
 
