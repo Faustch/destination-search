@@ -8,7 +8,7 @@ destination-search/
 ├── hotel-search/ # Frontend: React app
 ├── hotel-api/ # Backend: Express + MongoDB API
 
----
+
 
 ## 🌐 Frontend (React) – `hotel-search/`
 
@@ -30,7 +30,8 @@ npm start
 This app will run on:
 http://localhost:3000
 
----
+
+
 ## ⚙️ Backend (Node.js + Express + MongoDB) – hotel-api/
 
 ### Features
@@ -48,7 +49,7 @@ node server.js
 The backend server will run on:
 http://localhost:4000
 
----
+
 MongoDB Setup (Local)
 ```bash
 sudo systemctl start mongod
@@ -56,7 +57,7 @@ mongoimport --db hotelApp --collection destinations --file destinations.json --j
 mongosh
 use hotelApp
 ```
----
+
 ## Tech Stack
 - Frontend: React, TypeScript, CSS
 - Backend: Node.js, Express
