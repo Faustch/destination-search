@@ -1,7 +1,7 @@
-import React, {useState, useRef, useEffect} from 'react';
-import {useDestinations} from '../hooks/useDestinations';
-import {Destination} from '../types/destination';
-
+import React, { useState, useRef, useEffect } from 'react';
+import Fuse from 'fuse.js';
+import destinationsData from '../destinations.json';
+import { Destination } from '../types/destination';
 
 let debounceTimer: NodeJS.Timeout;
 
@@ -10,14 +10,21 @@ interface DestinationDropdownProps {
   selectedDestination: Destination | null;
 }
 
-export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({ 
-  onSelect, 
-  selectedDestination 
+export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
+  onSelect,
+  selectedDestination,
 }) => {
   const [inputValue, setInputValue] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const [results, setResults] = useState<Destination[]>([]);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { destinations, loading, searchDestinations } = useDestinations();
+
+  const fuse = new Fuse(destinationsData, {
+    keys: ['term'],
+    threshold: 0.4,
+    ignoreLocation: true,
+    includeScore: true,
+  });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -33,17 +40,19 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setInputValue(value);
-    searchDestinations(value);
     setIsOpen(true);
 
-    //debounce search
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() =>{
-    searchDestinations(value); 
-  }, 300);
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      if (value.trim() === '') {
+        setResults([]);
+      } else {
+        const matches = fuse.search(value, { limit: 10 }).map((result) => result.item);
+        setResults(matches);
+      }
+    }, 300);
   };
 
-  
   const handleSelect = (destination: Destination) => {
     onSelect(destination);
     setInputValue(destination.term);
@@ -60,15 +69,13 @@ export const DestinationDropdown: React.FC<DestinationDropdownProps> = ({
         placeholder="Search destinations..."
         className="dropdown-input"
       />
-      
+
       {isOpen && (
         <div className="dropdown-menu">
-          {loading ? (
-            <div className="dropdown-item">Loading...</div>
-          ) : destinations.length === 0 ? (
+          {results.length === 0 ? (
             <div className="dropdown-item no-results">No destinations found</div>
           ) : (
-            destinations.map(destination => (
+            results.map((destination) => (
               <div
                 key={destination.uid}
                 className="dropdown-item"

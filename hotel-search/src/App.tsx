@@ -5,6 +5,7 @@ import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import HotelSearchPage from './pages/HotelSearchPage';
 import HotelResultsPage from './pages/HotelResultsPage';
 import './styles/hotelSearch.css';
+import Autocomplete from './components/Autocomplete';
 
 const App: React.FC = () => {
   return(
